@@ -1,0 +1,103 @@
+#1- Hearts
+#2- Spades
+#3-Diamond
+#4-Club
+def deal(player,count):
+    x = random.choice(temp)
+    if x ==1:
+        y = random.choice(hearts)
+        hearts.pop(hearts.index(y))
+        player.append([y,'hearts'])
+    elif x ==2:
+        y = random.choice(spades)
+        spades.pop(hearts.index(y))
+        player.append([y,'spades'])
+    elif x ==3:
+        y = random.choice(diamond)
+        diamond.pop(hearts.index(y))
+        player.append([y,'diamond'])
+    elif x ==4:
+        y = random.choice(club)
+        club.pop(hearts.index(y))
+        player.append([y,'clubs'])
+    count = count + 1
+quit=1    
+while(quit):    
+    hearts = [1,2,3,4,5,6,7,8,9,10,10,10,10]
+    spades = [1,2,3,4,5,6,7,8,9,10,10,10,10]
+    diamond = [1,2,3,4,5,6,7,8,9,10,10,10,10]
+    club = [1,2,3,4,5,6,7,8,9,10,10,10,10]
+    temp = [1,2,3,4] 
+    player = []
+    dealer = []
+    pcount  = 0
+    dcount = 0
+    hit = False 
+    end = False
+    print("Currently you have a wallet amount of "+ str(wallet))
+    bet = int(input("Enter bet amount : "))
+    wallet = wallet - bet 
+    deal(player, pcount)
+    deal(player, pcount)
+    deal(dealer, dcount)
+    deal(dealer, dcount)
+    print("your cards are :")
+    print(player)
+    print("Total : "+ str(player[0][0]+player[1][0]))
+    print("dealer's cards are : "+str(dealer[0])+" second card is closed")
+    dealer_total = dealer[0][0]+dealer[1][0]
+    player_total = player[0][0] + player[1][0]
+    while(1):
+        choice = int(input("1 : Hit \n 2 : Stay \n 3 : Double Down "))
+        if choice ==1 :
+            deal(player, pcount )
+            player_total = player_total + player[pcount -1][0]
+            print("your cards are : ")
+            print(player)
+            print("Total : "+ str(player_total))
+            hit = True
+            if player_total>21:
+                print("You Lost  !!!")
+                end = True
+                break    
+        elif choice == 2 :
+            break
+        elif choice == 3:
+            if hit :
+                print("cannot double down now as you have opted for hit before")
+            elif player_total == 9 or player_total==10 or player_total == 11:
+                print("bet amount doubled !!!")
+                deal(player , pcount )
+                player_total = player_total + player[pcount -1][0]
+                print("your cards are : ")
+                print(player)
+                print("Total : "+ str(player_total))
+                wallet = wallet - bet
+                bet = bet *2
+                hit = True
+                break 
+            else : 
+                print("total does not equals 9/10/11")
+    if not end:            
+        while(1):
+            if dealer_total >=17:
+                break
+            elif dealer_total < 17:
+                print("dealer is hitting")
+                deal(dealer , dcount)
+                dealer_total = dealer_total + dealer[dcount -1][0]
+                print("dealers cards are ")
+                print(dealer)
+        if player_total >21:
+            print("You Lost !!!")
+        elif dealer_total > 21 or player_total > dealer_total:
+            print("You Win  !!!")
+            if player_total ==21:
+                wallet = wallet + (2.5*bet)
+            else:
+                wallet = wallet + (2*bet)
+        elif player_total == dealer_total:
+            print("draw")
+        else:
+            print("You Lost !!!")
+    quit = int(input("do you want to play another game ?.. 1 for yes...0 for no"))
