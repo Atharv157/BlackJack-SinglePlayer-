@@ -1,34 +1,31 @@
+import random
+wallet = 1000
 #1- Hearts
 #2- Spades
 #3-Diamond
 #4-Club
-def deal(player,count):
-    x = random.choice(temp)
-    if x ==1:
-        y = random.choice(hearts)
-        hearts.pop(hearts.index(y))
-        player.append([y,'hearts'])
-    elif x ==2:
-        y = random.choice(spades)
-        spades.pop(hearts.index(y))
-        player.append([y,'spades'])
-    elif x ==3:
-        y = random.choice(diamond)
-        diamond.pop(hearts.index(y))
-        player.append([y,'diamond'])
-    elif x ==4:
-        y = random.choice(club)
-        club.pop(hearts.index(y))
-        player.append([y,'clubs'])
+def deal(player,count,deck): 
+    player.append(deck.pop(deck.index(random.choice(deck))))
     count = count + 1
+def update(player,count ,player_total):
+    temp = ['J','Q','K']
+    if len(set(temp)&set(player))>=0:
+        player_total +=10
+    else:
+        player_total = player_total + player[count][0]  
 quit=1    
 while(quit):    
-    hearts = [1,2,3,4,5,6,7,8,9,10,10,10,10]
-    spades = [1,2,3,4,5,6,7,8,9,10,10,10,10]
-    diamond = [1,2,3,4,5,6,7,8,9,10,10,10,10]
-    club = [1,2,3,4,5,6,7,8,9,10,10,10,10]
-    temp = [1,2,3,4] 
+    SUITE = "Hearts Diamond Spades Clubs".split()
+    RANKS = "1 2 3 4 5 6 7 8 9 10 J Q K".split()
+    ranks = "J Q k".split()
+    for x in xrange(10):
+        RANKS[x]=int(RANKS[x]) 
+    deck = [(r,s) for  s in SUITE for r in RANKS] 
+    temp = [(i,j) for i in SUITE for j in ranks]
+    #print(deck)
     player = []
+    player_total = 0
+    dealer_total = 0 
     dealer = []
     pcount  = 0
     dcount = 0
@@ -37,21 +34,21 @@ while(quit):
     print("Currently you have a wallet amount of "+ str(wallet))
     bet = int(input("Enter bet amount : "))
     wallet = wallet - bet 
-    deal(player, pcount)
-    deal(player, pcount)
-    deal(dealer, dcount)
-    deal(dealer, dcount)
+    deal(player, pcount,deck)
+    deal(player, pcount,deck)
+    deal(dealer, dcount,deck)
+    deal(dealer, dcount,deck)
     print("your cards are :")
     print(player)
-    print("Total : "+ str(player[0][0]+player[1][0]))
+    update(player,pcount,player_total)
+    update(dealer,dcount,dealer_total)
+    print("Total : "+ str(player_total))
     print("dealer's cards are : "+str(dealer[0])+" second card is closed")
-    dealer_total = dealer[0][0]+dealer[1][0]
-    player_total = player[0][0] + player[1][0]
     while(1):
         choice = int(input("1 : Hit \n 2 : Stay \n 3 : Double Down "))
         if choice ==1 :
-            deal(player, pcount )
-            player_total = player_total + player[pcount -1][0]
+            deal(player, pcount ,deck)
+            update(player,pcount,player_total)
             print("your cards are : ")
             print(player)
             print("Total : "+ str(player_total))
@@ -68,7 +65,7 @@ while(quit):
             elif player_total == 9 or player_total==10 or player_total == 11:
                 print("bet amount doubled !!!")
                 deal(player , pcount )
-                player_total = player_total + player[pcount -1][0]
+                update(player,pcount,player_total)
                 print("your cards are : ")
                 print(player)
                 print("Total : "+ str(player_total))
@@ -84,13 +81,11 @@ while(quit):
                 break
             elif dealer_total < 17:
                 print("dealer is hitting")
-                deal(dealer , dcount)
-                dealer_total = dealer_total + dealer[dcount -1][0]
+                deal(dealer , dcount,deck)
+                update(dealer,dcount ,dealer_total)
                 print("dealers cards are ")
                 print(dealer)
-        if player_total >21:
-            print("You Lost !!!")
-        elif dealer_total > 21 or player_total > dealer_total:
+        if dealer_total > 21 or player_total > dealer_total:
             print("You Win  !!!")
             if player_total ==21:
                 wallet = wallet + (2.5*bet)
